@@ -1,0 +1,25 @@
+Backend:
+    - connected to MongoDB
+    - made two schemas/models
+        1) Notes.js
+        2) User.js
+    - created an express app
+______________________________________________________________________________________________
+    - made to routes for
+         1) authentication: auth.js
+         2) notes.js
+______________________________________________________________________________________________
+    - made a post request to save the user data at "auth"
+    - include a validator to validate the data feed to MongoDB
+    - made User.js to createIndexes() so that it can store only one value of Unique key
+______________________________________________________________________________________________
+    - changed the checking of the user with an already existing email
+    - created thunderclient collection to manage requests
+    - included try and catch to catch any random errors
+______________________________________________________________________________________________
+    - installed "bycryptjs" to hash the password
+    - installed "jsonwebtoken" to make a token to send it to the user
+______________________________________________________________________________________________
+    - made a login route in auth.js
+    - checking for correct credentials
+    
