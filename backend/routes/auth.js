@@ -5,10 +5,11 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const { getByPlaceholderText } = require('@testing-library/dom');
 var jwt = require('jsonwebtoken');
+const fetchuser = require('../middleware/fetchuser')
 
 const JWT_SECRET = "secret_wali_batcheet";
 
-//create a user using: POST "/api/auth/createuser" ... No login required
+//ROUTE 1: create a user using: POST "/api/auth/createuser" ... No login required
 router.post('/createuser', [
     //validating the input
     body('name', 'Enter a valid name').isLength({ min: 3 }),
@@ -17,7 +18,6 @@ router.post('/createuser', [
 ], async (req, res) => {
     //if there are errors, return bad request and the errors
     const errors = validationResult(req);
-
     //cheching if input are empty
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -63,8 +63,7 @@ router.post('/createuser', [
 }
 );
 
-
-//Authenticate a user : POST "/api/auth/login" ... No login required
+//ROUTE 2: Authenticate a user : POST "/api/auth/login" ... No login required
 router.post('/login', [
     //validating the input
     body('email', 'Enter a valid email').isEmail(),
@@ -111,6 +110,19 @@ router.post('/login', [
         //sending the token to the user
         res.json({ authToken });
 
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Some Error Occured");
+    }
+
+});
+
+//ROUTE 3: get loggedin User details using: POST "/api/auth/getuser" ... login required
+router.post('/getuser', fetchuser,async (req, res) => {
+    try {
+        userId = req.user.id;
+        const user = await User.findById(userId).select("-password");
+        res.send(user);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Some Error Occured");
