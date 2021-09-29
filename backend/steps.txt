@@ -15,7 +15,7 @@ ________________________________________________________________________________
 ______________________________________________________________________________________________
     - changed the checking of the user with an already existing email
     - created thunderclient collection to manage requests
-    - included try and catch to catch any random errors
+    - included try and catch to catch any random errors  
 ______________________________________________________________________________________________
     - installed "bycryptjs" to hash the password
     - installed "jsonwebtoken" to make a token to send it to the user
