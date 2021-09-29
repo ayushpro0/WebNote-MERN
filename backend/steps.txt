@@ -24,6 +24,12 @@ ________________________________________________________________________________
     - checking for correct credentials
 ______________________________________________________________________________________________
     - made a middlewaire "fetchuser" to get the details of the user using authtoken
+______________________________________________________________________________________________
+    - made a fetchnote endpoint to get all the note of the user
+    - made a addnote endpoint to add a new note
+    - made a updatenote endpoint to update a existing note of the user
+    - made a deletenote endpoint to delete a existing note of the user 
+
 
 
     
