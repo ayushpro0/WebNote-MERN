@@ -2,32 +2,50 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import noteContext from '../context/notes/noteContext';
 import NoteItem from './NoteItem';
 import AddNote from './AddNote';
+import { useHistory } from 'react-router';
 
-const Notes = () => {
+const Notes = (props) => {
 
     const context = useContext(noteContext);
     const { notes, getNotes, editNote } = context;
 
+    const history = useHistory();
+
     useEffect(() => {
-        getNotes();
-        // eslint-disable-next-line
+        if (localStorage.getItem('token')) {
+            getNotes();
+            // eslint-disable-next-line
+        }
+        else {
+            history.push("/login")
+        }
     }, [])
 
     const ref = useRef(null);
     const refClose = useRef(null);
 
-    const [note, setNote] = useState({ id: "", title: "", description: "", tag: "default" });
 
-    const updateNote = (currenNote) => {
+    const [note, setNote] = useState({ id: "", etitle: "", edescription: "", etag: "" });
+
+
+
+    const updateNote = (currentNote) => {
+        //to open the modal
         ref.current.click();
-        setNote({ id: currenNote._id, etitle: currenNote.title, edescription: currenNote.description, etag: currenNote.tag });
+
+        //to fill the modal form fields with the notes values before we can edit it
+        setNote({ id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag });
     }
 
 
     //function called when the Save button is clicked
     const updateButtonClick = (e) => {
+        //sending it the NoteState context and execute ite editNote function
         editNote(note.id, note.etitle, note.edescription, note.etag);
+
+        //to close the modal
         refClose.current.click();
+        props.showAlert("Updated Successfully", "success")
     }
 
     const onChange = (e) => {
@@ -41,7 +59,7 @@ const Notes = () => {
     return (
         <div>
             <div className="my-3">
-                <AddNote />
+                <AddNote showAlert={props.showAlert} />
             </div>
 
             <button ref={ref} type="button" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal"> A </button>
@@ -57,27 +75,28 @@ const Notes = () => {
                             <form >
                                 <div className="mb-3" >
                                     <label htmlFor="etitle" className="form-label mx-2 h5" >Title</label>
-                                    <input type="text" className="form-control"
+                                    <input type="text" className="form-control forminput"
                                         id="etitle" name="etitle"
                                         value={note.etitle} onChange={onChange}
-                                        style={{ borderRadius: "20px", backgroundColor: "#e7e7e7", border: "none", }}
+                                        minLength={5} required
                                     />
 
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="edescription" className="form-label mx-2 h5">Description</label>
-                                    <input type="text" className="form-control"
+                                    <textarea className="form-control forminput" rows="2"
                                         id="edesc" name="edescription"
                                         value={note.edescription} onChange={onChange}
-                                        style={{ borderRadius: "20px", backgroundColor: "#e7e7e7", border: "none", }}
+                                        minLength={5} required
                                     />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="etag" className="form-label mx-2 h5">Tag</label>
-                                    <input type="text" className="form-control"
+                                    <input type="text" className="form-control forminput"
                                         id="etag" name="etag"
-                                        value={note.etag} onChange={onChange}
-                                        style={{ borderRadius: "20px", backgroundColor: "#e7e7e7", border: "none", }}
+                                        value={note.etag}
+                                        onChange={onChange}
+                                        minLength={5} required
                                     />
                                 </div>
 
@@ -87,7 +106,8 @@ const Notes = () => {
 
                                     {/* update button  */}
                                     <button type="button" className="d-flex btn-grad justify-content-center  my-3 py-1"
-                                        onClick={updateButtonClick} >
+                                        onClick={updateButtonClick}
+                                        disabled={note.etitle.length < 5 || note.edescription.length < 5}>
                                         <b> Update </b>
                                     </button>
 
@@ -104,10 +124,14 @@ const Notes = () => {
             </div>
 
 
+
             <div className="row my-3 ">
                 <h2 className="mx-2 row justify-content-center bluecolor" >Your Notes</h2>
+                <div className="mx-2 my-3 row justify-content-center  fontwork">
+                    {notes.length === 0 && 'No Notes to display...'}
+                </div>
                 {notes.map((note) => {
-                    return <NoteItem key={note._id} updateNote={updateNote} note={note} />
+                    return <NoteItem key={note._id} updateNote={updateNote} note={note} showAlert={props.showAlert} />
                 })}
             </div>
         </div>

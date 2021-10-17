@@ -1,21 +1,26 @@
 import React, { useContext, useState } from 'react'
 import noteContext from '../context/notes/noteContext';
 
-const AddNote = () => {
+const AddNote = (props) => {
     // using the context to access the notes
     const context = useContext(noteContext);
     const { addNote } = context;
 
-    //made a note state to add in DB
-    const [note, setNote] = useState({ title: "", description: "", tag: "default" });
+    //made a note state to show in frontend
+    const [note, setNote] = useState({ title: "", description: "", tag: "" });
 
     //function called when the Save button is clicked
     const saveButtonClick = (e) => {
         //to prevent the reloading of the page when the it is clicked
         e.preventDefault();
 
-        //adding the note in the frontend to show in the NoteItem component
+        //adding the note in the backend DB
         addNote(note.title, note.description, note.tag);
+
+        //to clear the fields of the form after saving it
+        setNote({ title: "", description: "", tag: "" });
+
+        props.showAlert("Added Successfully", "success")
     }
 
     const onChange = (e) => {
@@ -24,42 +29,52 @@ const AddNote = () => {
     }
 
     return (
-        <div className="d-flex justify-content-center ">
-            <div className="container my-3">
+        <div className="row justify-content-center ">
 
-                <h2 className="mb-3 row justify-content-center bluecolor" >Create a Note</h2>
 
-                <form >
-                    <div className="mb-3" >
-                        <label htmlFor="title" className="form-label mx-2 h6"> Title </label>
+
+            <form className="mb-3 my-3 " style={{ width: "60%" }}>
+
+                <h2 className="mb-5 row justify-content-center bluecolor" >Create a Note</h2>
+
+
+                <div className="row mb-3" >
+                    <label htmlFor="title" className="col-sm-2 col-form-label fontsize"> Title </label>
+                    <div className="col-sm-10">
                         <input type="text" className="form-control forminput" id="title" name="title"
+                            value={note.title}
                             onChange={onChange}
-                            placeholder="enter the title" />
-
+                            placeholder="enter the title"
+                            minLength={5}
+                            required />
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="description" className="form-label mx-2 h6"> Description </label>
-                        <input type="text" className="form-control forminput" id="desc" name="description"
+                </div>
+
+
+                <div className="row mb-3">
+                    <label htmlFor="description" className="col-sm-2 col-form-label fontsize"> Description </label>
+                    <div className="col-sm-10">
+                        <textarea className="form-control forminput" id="desc" name="description" rows="2"
                             onChange={onChange}
+                            value={note.description}
                             placeholder="enter the description"
-
-                        />
+                            minLength={5}
+                            required/>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="tag" className="form-label mx-2 h6"> Tag </label>
-                        <input type="text" className="form-control forminput" id="tag" name="tag"
-                            onChange={onChange}
-                            placeholder="enter the tag"
-                        />
-                    </div>
+                </div>
 
-                    <button className="d-flex justify-content-center btn-grad" type="submit" onClick={saveButtonClick}
-                        style={{ padding: "6px 40px", fontSize: "17px" }}>
-                        <b>Save </b>
+
+                <div className="row mb-3 mx-2 justify-content-center">
+                    <button className="d-flex btn-grad justify-content-center  my-3 py-1" type="submit"
+                        onClick={saveButtonClick}
+                        disabled={note.title.length < 5 || note.description.length < 5}
+                        style={{ width: "30%" }}>
+                        <b> Save </b>
                     </button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
+
     )
 }
 

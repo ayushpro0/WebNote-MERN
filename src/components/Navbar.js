@@ -1,8 +1,14 @@
 import React from 'react';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = (props) => {
     let location = useLocation();
+    let history = useHistory()
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        history.push('/login');
+    }
 
     return (
         <div>
@@ -22,10 +28,18 @@ const Navbar = () => {
                             </li>
 
                         </ul>
-                        <form className="d-flex">
-                            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                            <button className="btn btn-outline-success" type ="submit">Search</button>
-                        </form>
+                        {!localStorage.getItem('token') ?<form className="d-flex">
+                            
+                            <Link className="btn btn-grad mx-2" to="/login" role="button"> Login </Link>
+                            <Link className="btn btn-grad mx-2" to="/signup" role="button"> SignUp </Link>
+                            
+                             
+                        </form>  
+                        : <form>
+                            {/* //user datails  */} 
+                            <button onClick={handleLogout} className="btn btn-grad mx-2"> Logout </button>
+                            </form>
+                            }
                     </div>
                 </div>
             </nav>

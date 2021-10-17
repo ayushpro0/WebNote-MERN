@@ -16,11 +16,13 @@ router.post('/createuser', [
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password must be atleast 5 characters long!').isLength({ min: 5 })
 ], async (req, res) => {
+
+    let success = false;
     //if there are errors, return bad request and the errors
     const errors = validationResult(req);
     //cheching if input are empty
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ success, errors: errors.array() });
     }
 
     //checking whether the email of the user exist already in our Database
@@ -30,7 +32,7 @@ router.post('/createuser', [
 
         //if the user already exists return with error and message
         if (user) {
-            return res.status(400).json({ error: "Sorry a user with this email already exists :( " });
+            return res.status(400).json({ success, error: "Sorry a user with this email already exists :( " });
         }
 
         //generating a salt for the password with the help of bcrypt
@@ -52,8 +54,9 @@ router.post('/createuser', [
 
         //using that id to make a Authentication Token along with a SECRET
         const authToken = jwt.sign(data, JWT_SECRET);
+        success = true;
         //sending the token to the user
-        res.json({ authToken });
+        res.json({ success, authToken });
 
     }
     catch (error) {
@@ -70,11 +73,13 @@ router.post('/login', [
     body('password', 'Password cannot be blank').exists(),
 ], async (req, res) => {
 
+    let success = false;
     //if there are errors, return bad request and the errors
     const errors = validationResult(req);
 
     //checking if inputs are empty or not
     if (!errors.isEmpty()) {
+        
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -88,7 +93,8 @@ router.post('/login', [
 
         //if user does not exist in our DB, return appropriate error message
         if (!user) {
-            return res.status(400).json({ error: "Please try to login with correct credentials." });
+            
+            return res.status(400).json({ success, error: "Please try to login with correct credentials." });
         }
 
         //if the user with requested email exist in our DB then we will compare the passwords
@@ -97,7 +103,8 @@ router.post('/login', [
 
         //if the password does not match, return appropriate error message
         if (!passwordCompare) {
-            return res.status(400).json({ error: "Please try to login with correct credentials." });
+            
+            return res.status(400).json({ success, error: "Please try to login with correct credentials." });
         }
 
         //taking "id" of the user to make authtoken
@@ -108,7 +115,10 @@ router.post('/login', [
         //using that User id to make a Authentication Token along with a SECRET
         const authToken = jwt.sign(data, JWT_SECRET);
         //sending the token to the user
-        res.json({ authToken });
+        success = true;
+        username = user.name;
+        useremail = user.email;
+        res.json({ success, authToken, username, useremail });
 
     } catch (error) {
         console.error(error.message);

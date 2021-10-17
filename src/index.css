@@ -3,7 +3,7 @@ body {
   background-color: #334257;
   color: white;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -55,7 +55,26 @@ i {
   font-weight: bold;
 
 }
+.whitefont {
+  color: #e7e7e7;
+  font-family: work sans;
+
+
+}
+
+.fontwork {
+  font-family: work sans;
+
+}
 
 .greycolor {
   color: #dfdfdf
+}
+
+.fontblack {
+  color: #212121;
+}
+
+.fontsize {
+  font-size: 20px;
 }
